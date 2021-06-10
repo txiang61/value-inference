@@ -4,6 +4,7 @@ import checkers.inference.model.ArithmeticConstraint.ArithmeticOperationKind;
 import checkers.inference.model.ArithmeticVariableSlot;
 import checkers.inference.model.ConstantSlot;
 import checkers.inference.model.Slot;
+import checkers.inference.model.SourceVariableSlot;
 import checkers.inference.model.VariableSlot;
 import checkers.inference.solver.backend.encoder.ArithmeticConstraintEncoder;
 import checkers.inference.solver.backend.z3smt.Z3SmtFormatTranslator;
@@ -66,16 +67,14 @@ public class ValueArithmeticConstraintEncoder extends ValueAbstractConstraintEnc
         // Unless variable type is long, all arithmetic operations in Java are widened to int first,
         IntNum maxRange = ctx.mkInt(Integer.MAX_VALUE);
         IntNum minRange = ctx.mkInt(Integer.MIN_VALUE);
-        if (leftOperand instanceof VariableSlot) {
-            VariableSlot vslot = (VariableSlot) leftOperand;
-            TypeMirror type = vslot.getUnderlyingType();
+        if (leftOperand instanceof SourceVariableSlot) {
+            TypeMirror type = ((SourceVariableSlot) leftOperand).getUnderlyingType();
             if (type.getKind() == TypeKind.LONG) {
                 maxRange = ctx.mkInt(Long.MAX_VALUE);
                 minRange = ctx.mkInt(Long.MIN_VALUE);
             }
-        } else if (rightOperand instanceof VariableSlot) {
-            VariableSlot vslot = (VariableSlot) rightOperand;
-            TypeMirror type = vslot.getUnderlyingType();
+        } else if (rightOperand instanceof SourceVariableSlot) {
+            TypeMirror type = ((SourceVariableSlot) rightOperand).getUnderlyingType();
             if (type.getKind() == TypeKind.LONG) {
                 maxRange = ctx.mkInt(Long.MAX_VALUE);
                 minRange = ctx.mkInt(Long.MIN_VALUE);
@@ -867,8 +866,8 @@ public class ValueArithmeticConstraintEncoder extends ValueAbstractConstraintEnc
     @Override
     public BoolExpr encodeVariable_Variable(
             ArithmeticOperationKind operation,
-            Slot leftOperand,
-            Slot rightOperand,
+            VariableSlot leftOperand,
+            VariableSlot rightOperand,
             ArithmeticVariableSlot result) {
         return encode(operation, leftOperand, rightOperand, result);
     }
@@ -876,7 +875,7 @@ public class ValueArithmeticConstraintEncoder extends ValueAbstractConstraintEnc
     @Override
     public BoolExpr encodeVariable_Constant(
             ArithmeticOperationKind operation,
-            Slot leftOperand,
+            VariableSlot leftOperand,
             ConstantSlot rightOperand,
             ArithmeticVariableSlot result) {
         return encode(operation, leftOperand, rightOperand, result);
@@ -886,7 +885,7 @@ public class ValueArithmeticConstraintEncoder extends ValueAbstractConstraintEnc
     public BoolExpr encodeConstant_Variable(
             ArithmeticOperationKind operation,
             ConstantSlot leftOperand,
-            Slot rightOperand,
+            VariableSlot rightOperand,
             ArithmeticVariableSlot result) {
         return encode(operation, leftOperand, rightOperand, result);
     }

@@ -62,7 +62,7 @@ public class ValueInferenceTransfer extends InferenceTransfer {
         Tree tree = var.getTree();
         ConstraintManager constraintManager = InferenceMain.getInstance().getConstraintManager();
         AnnotatedTypeMirror atm = typeFactory.getAnnotatedType(tree);
-        Slot slotToRefine = getInferenceAnalysis().getSlotManager().getVariableSlot(atm);
+        Slot slotToRefine = getInferenceAnalysis().getSlotManager().getSlot(atm);
         // TODO: Understand why there are null slots
         if (slotToRefine == null) {
             return;

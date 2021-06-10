@@ -48,8 +48,8 @@ public class ValueZ3SmtSoftConstraintEncoder
     }
 
     private void subtypeEqPreference(SubtypeConstraint stc, int prefenceVal) {
-        Z3InferenceValue sub = stc.getFirst().serialize(formatTranslator);
-        Z3InferenceValue sup = stc.getSecond().serialize(formatTranslator);
+        Z3InferenceValue sub = stc.getFirst().serialize(z3SmtFormatTranslator);
+        Z3InferenceValue sup = stc.getSecond().serialize(z3SmtFormatTranslator);
 
         // Prefer same upper bound
         BoolExpr lowerBoundEq =

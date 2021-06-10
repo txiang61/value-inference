@@ -283,9 +283,9 @@ public class ValueVisitor extends InferenceVisitor<ValueChecker, BaseAnnotatedTy
             AnnotatedTypeMirror varATM = iatf.getAnnotatedTypeLhs(tree.getVariable());
             AnnotationMirror exprAMVal = exprATM.getEffectiveAnnotationInHierarchy(UNKNOWNVAL);
             AnnotationMirror varAMVal = varATM.getEffectiveAnnotationInHierarchy(UNKNOWNVAL);
-            Slot lhs = slotManager.getVariableSlot(exprATM);
-            Slot rhs = slotManager.getVariableSlot(varATM);
-            Slot res = slotManager.getVariableSlot(resATM);
+            Slot lhs = slotManager.getSlot(exprATM);
+            Slot rhs = slotManager.getSlot(varATM);
+            Slot res = slotManager.getSlot(resATM);
 
             Kind kind = tree.getKind();
             switch (kind) {
@@ -314,7 +314,7 @@ public class ValueVisitor extends InferenceVisitor<ValueChecker, BaseAnnotatedTy
                         break;
                     } // Create LUB constraint by default
                 default:
-                    Slot lubSlot = slotManager.getVariableSlot(atypeFactory.getAnnotatedType(tree));
+                    Slot lubSlot = slotManager.getSlot(atypeFactory.getAnnotatedType(tree));
                     // Create LUB constraint by default
                     constraintManager.addSubtypeConstraint(lhs, lubSlot);
                     constraintManager.addSubtypeConstraint(rhs, lubSlot);
@@ -339,7 +339,7 @@ public class ValueVisitor extends InferenceVisitor<ValueChecker, BaseAnnotatedTy
             Kind kind = tree.getKind();
             AnnotatedTypeMirror resType = atypeFactory.getAnnotatedType(tree.getExpression());
             AnnotationMirror exprAMVal = resType.getEffectiveAnnotationInHierarchy(UNKNOWNVAL);
-            Slot var = slotManager.getVariableSlot(resType);
+            Slot var = slotManager.getSlot(resType);
 
             switch (kind) {
                 case UNARY_MINUS:
@@ -385,7 +385,7 @@ public class ValueVisitor extends InferenceVisitor<ValueChecker, BaseAnnotatedTy
                     }
                 default:
                     // Create LUB constraint by default
-                    Slot lubSlot = slotManager.getVariableSlot(atypeFactory.getAnnotatedType(tree));
+                    Slot lubSlot = slotManager.getSlot(atypeFactory.getAnnotatedType(tree));
                     constraintManager.addSubtypeConstraint(var, lubSlot);
                     break;
             }

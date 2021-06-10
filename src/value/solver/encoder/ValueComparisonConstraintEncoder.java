@@ -4,6 +4,7 @@ import checkers.inference.model.ComparisonConstraint.ComparisonOperationKind;
 import checkers.inference.model.ComparisonVariableSlot;
 import checkers.inference.model.ConstantSlot;
 import checkers.inference.model.Slot;
+import checkers.inference.model.VariableSlot;
 import checkers.inference.solver.backend.encoder.ComparisonConstraintEncoder;
 import checkers.inference.solver.backend.z3smt.Z3SmtFormatTranslator;
 import checkers.inference.solver.frontend.Lattice;
@@ -424,8 +425,8 @@ public class ValueComparisonConstraintEncoder extends ValueAbstractConstraintEnc
     @Override
     public BoolExpr encodeVariable_Variable(
             ComparisonOperationKind operation,
-            Slot left,
-            Slot right,
+            VariableSlot left,
+            VariableSlot right,
             ComparisonVariableSlot result) {
         return encode(operation, left, right, result);
     }
@@ -433,7 +434,7 @@ public class ValueComparisonConstraintEncoder extends ValueAbstractConstraintEnc
     @Override
     public BoolExpr encodeVariable_Constant(
             ComparisonOperationKind operation,
-            Slot left,
+            VariableSlot left,
             ConstantSlot right,
             ComparisonVariableSlot result) {
         return encode(operation, left, right, result);
@@ -443,7 +444,7 @@ public class ValueComparisonConstraintEncoder extends ValueAbstractConstraintEnc
     public BoolExpr encodeConstant_Variable(
             ComparisonOperationKind operation,
             ConstantSlot left,
-            Slot right,
+            VariableSlot right,
             ComparisonVariableSlot result) {
         return ctx.mkTrue();
     }

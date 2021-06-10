@@ -3,6 +3,7 @@ package value.solver.encoder;
 import checkers.inference.model.AnnotationLocation;
 import checkers.inference.model.ConstantSlot;
 import checkers.inference.model.Slot;
+import checkers.inference.model.VariableSlot;
 import checkers.inference.solver.backend.encoder.binary.EqualityConstraintEncoder;
 import checkers.inference.solver.backend.z3smt.Z3SmtFormatTranslator;
 import checkers.inference.solver.frontend.Lattice;
@@ -29,12 +30,12 @@ public class ValueEqualityConstraintEncoder extends ValueAbstractConstraintEncod
     }
 
     @Override
-    public BoolExpr encodeVariable_Variable(Slot fst, Slot snd) {
+    public BoolExpr encodeVariable_Variable(VariableSlot fst, VariableSlot snd) {
         return encode(fst, snd);
     }
 
     @Override
-    public BoolExpr encodeVariable_Constant(Slot fst, ConstantSlot snd) {
+    public BoolExpr encodeVariable_Constant(VariableSlot fst, ConstantSlot snd) {
         if (fst.getLocation() == AnnotationLocation.MISSING_LOCATION) {
             return ctx.mkTrue();
         }
@@ -42,7 +43,7 @@ public class ValueEqualityConstraintEncoder extends ValueAbstractConstraintEncod
     }
 
     @Override
-    public BoolExpr encodeConstant_Variable(ConstantSlot fst, Slot snd) {
+    public BoolExpr encodeConstant_Variable(ConstantSlot fst, VariableSlot snd) {
         if (snd.getLocation() == AnnotationLocation.MISSING_LOCATION) {
             return ctx.mkTrue();
         }

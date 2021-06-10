@@ -2,6 +2,7 @@ package value.solver;
 
 import checkers.inference.model.ConstantSlot;
 import checkers.inference.model.Slot;
+import checkers.inference.model.SourceVariableSlot;
 import checkers.inference.model.VariableSlot;
 import checkers.inference.solver.backend.encoder.ConstraintEncoderFactory;
 import checkers.inference.solver.backend.z3smt.Z3SmtFormatTranslator;
@@ -71,7 +72,7 @@ public class ValueFormatTranslator extends Z3SmtFormatTranslator<Z3InferenceValu
     }
 
     @Override
-    protected Z3InferenceValue serializeVarSlot(Slot slot) {
+    protected Z3InferenceValue serializeVariableSlot(VariableSlot slot) {
         int slotID = slot.getId();
         if (serializedSlots.containsKey(slotID)) {
             return serializedSlots.get(slotID);
@@ -120,23 +121,14 @@ public class ValueFormatTranslator extends Z3SmtFormatTranslator<Z3InferenceValu
     }
 
     @Override
-    public BoolExpr encodeSlotWellformnessConstraint(Slot slot) {
-        if (slot instanceof ConstantSlot) {
-            ConstantSlot cs = (ConstantSlot) slot;
-            AnnotationMirror anno = cs.getValue();
-            // encode poly as constant trues
-            if (AnnotationUtils.areSameByClass(anno, PolyVal.class)) {
-                return ctx.mkTrue();
-            }
-        }
+    public BoolExpr encodeSlotWellformednessConstraint(VariableSlot slot) {
         Z3InferenceValue value = slot.serialize(this);
         BoolExpr range =
                 ctx.mkAnd(
                         ctx.mkGe(value.getIntRangeLower(), ctx.mkInt(Long.MIN_VALUE)),
                         ctx.mkLe(value.getIntRangeUpper(), ctx.mkInt(Long.MAX_VALUE)));
-        if (slot instanceof VariableSlot) {
-            VariableSlot vslot = (VariableSlot) slot;
-            TypeMirror type = vslot.getUnderlyingType();
+        if (slot instanceof SourceVariableSlot) {
+            TypeMirror type = ((SourceVariableSlot) slot).getUnderlyingType();
             if (type == null) {
                 return ctx.mkAnd(
                         // one hot
@@ -300,11 +292,10 @@ public class ValueFormatTranslator extends Z3SmtFormatTranslator<Z3InferenceValu
     }
 
     @Override
-    public BoolExpr encodeSlotPreferenceConstraint(Slot slot) {
+    public BoolExpr encodeSlotPreferenceConstraint(VariableSlot slot) {
         Z3InferenceValue value = slot.serialize(this);
-        if (slot instanceof VariableSlot) {
-            VariableSlot vslot = (VariableSlot) slot;
-            TypeMirror type = vslot.getUnderlyingType();
+        if (slot instanceof SourceVariableSlot) {
+            TypeMirror type = ((SourceVariableSlot) slot).getUnderlyingType();
             if (type == null) {
                 return value.getBottomVal();
             }

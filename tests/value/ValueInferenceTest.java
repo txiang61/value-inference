@@ -1,3 +1,5 @@
+package value;
+
 import checkers.inference.test.CFInferenceTest;
 import java.io.File;
 import java.util.ArrayList;
